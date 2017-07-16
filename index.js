@@ -142,8 +142,8 @@ function createRenderer(meta) {
 				`
 				]),
 				h('rect', {
-					width: scale(meta.width),
-					height: scale(meta.height),
+					width: meta.width * 10,
+					height: (meta.height * 19) + 30,
 					style: {
 						fill: '#000'
 					}
@@ -196,21 +196,58 @@ function Group(props, children) {
 }
 
 function Screen(props = {}, children = []) {
-	const width = scale(props.width);
-	const height = scale(props.height);
+	const width = props.width * 10;
+	const height = props.height * 19.5;
+
+	const outerWidth = (width + 32);
+	const outerHeight = height + 127;
+	const outerMiddle = outerWidth / 2;
+	const innerWidth = width + 31;
+	const t = (outerWidth / 2) - (outerMiddle / 2);
 
 	return h('svg', {
 		xmlns: 'http://www.w3.org/2000/svg',
-		width: String(width),
-		height: String(height),
-		viewBox: [-projectY(.25), -projectY(.25), width, height].join(' '),
+		width: outerWidth,
+		height: outerHeight,
 		style: {
-			backgroundColor: '#000',
 			fontFamily: "Consolas, Menlo, 'Bitstream Vera Sans Mono', monospace, 'Powerline Symbols'",
-			fontSize: projectY(.8),
-			stroke: 'none'
+			fontSize: 15,
 		}
-	}, children);
+	}, [
+		h('g', {}, [
+			h('rect', {
+				rx: 5,
+				ry: 5,
+				y: 50,
+				width: innerWidth,
+				height: height + 76,
+				style: {
+					backgroundColor: '#000',
+					stroke: '#303030',
+					strokeWidth: 1,
+				}
+			}),
+			h('circle', {
+				cx: 20,
+				cy: 70,
+				r: 7.5,
+				fill: '#ff5f58'
+			}),
+			h('circle', {
+				cx: 45,
+				cy: 70,
+				r: 7.5,
+				fill: '#ffbd2e'
+			}),
+			h('circle', {
+				cx: 70,
+				cy: 70,
+				r: 7.5,
+				fill: '#18c132'
+			}),
+			h('svg', {x: 15, y: 100}, children)
+		]),
+	]);
 }
 
 function group(rows) {
