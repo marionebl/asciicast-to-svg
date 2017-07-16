@@ -1,31 +1,45 @@
 {
-	"name":         "asciicast-to-svg",
-	"description":  "Render frames of Asciicasts as SVGs.",
-	"version":      "0.2.0",
-	"main":         "index.js",
-	"files":        ["index.js", "colors.js", "cli.js"],
-	"keywords":     ["svg", "asciinema", "asciicast"],
-	"author":       "Jannis R <mail@jannisr.de>",
-	"homepage":     "https://github.com/derhuerst/asciicast-to-svg",
-	"repository":   "derhuerst/asciicast-to-svg",
-	"bugs":         "https://github.com/derhuerst/asciicast-to-svg/issues",
-	"license":      "ISC",
-	"engines":      {"node": ">=6"},
-	"dependencies": {
-		"headless-terminal": "^0.4.0",
-		"minimist": "^1.2.0",
-		"screen-buffer": "^0.4.0",
-		"vdom-to-html": "^2.3.1",
-		"virtual-dom": "^2.1.1"
-	},
-	"devDependencies": {
-		"benchmark": "^2.1.4",
-		"tape": "^4.6.3",
-		"tap-min": "^1.2.1"
-	},
-	"scripts": {
-		"benchmark": "node benchmark.js",
-		"test": "node test.js | tap-min",
-		"prepublishOnly": "npm test"
-	}
+  "name": "asciicast-to-svg",
+  "description": "Render frames of Asciicasts as SVGs.",
+  "version": "0.2.0",
+  "main": "index.js",
+  "files": [
+    "index.js",
+    "colors.js",
+    "cli.js"
+  ],
+  "keywords": [
+    "svg",
+    "asciinema",
+    "asciicast"
+  ],
+  "author": "Jannis R <mail@jannisr.de>",
+  "homepage": "https://github.com/derhuerst/asciicast-to-svg",
+  "repository": "derhuerst/asciicast-to-svg",
+  "bugs": "https://github.com/derhuerst/asciicast-to-svg/issues",
+  "license": "ISC",
+  "engines": {
+    "node": ">=6"
+  },
+  "dependencies": {
+    "get-stdin": "^5.0.1",
+    "headless-terminal": "^0.4.0",
+    "lodash": "^4.17.4",
+    "meow": "^3.7.0",
+    "minimist": "^1.2.0",
+    "screen-buffer": "^0.4.0",
+    "shorthash": "0.0.2",
+    "vdom-to-html": "^2.3.1",
+    "virtual-dom": "^2.1.1"
+  },
+  "devDependencies": {
+    "benchmark": "^2.1.4",
+    "tape": "^4.6.3",
+    "tap-min": "^1.2.1"
+  },
+  "scripts": {
+    "benchmark": "node benchmark.js",
+    "test": "node test.js | tap-min",
+    "prepublishOnly": "npm test"
+  }
 }
