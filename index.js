@@ -46,19 +46,18 @@ function renderAt(asciicast, time) {
 
 function animate(cast) {
 	const renderer = createRenderer(cast);
-	const delays = [];
 
 	const frames = cast.stdout
-		.map(([delay, data], i) => {
+		.map(([_, data], index) => {
 			renderer.write(data);
-			delays.push(delay);
-			const start = delays.reduce((a, d) => a += d, 0);
-			const next = cast.stdout[i + 1];
-			const end = next ? start + next[0] : cast.duration;
-			return renderer.render({component: 'g', start, end});
+			return renderer.render({component: 'g', index});
 		});
 
-	return Screen({width: cast.width, height: cast.height}, frames);
+	return Screen({
+		duration: cast.duration,
+		width: cast.width,
+		height: cast.height
+	}, frames);
 }
 
 
@@ -111,36 +110,9 @@ function createRenderer(meta) {
 				return null;
 			}
 
-			const startFrame = props.start / (meta.duration / 100);
-			const endFrame = props.end / (meta.duration / 100);
-
-			const name = `frame-${String(props.start).replace('.', '-')}`;
-			return h('g', {class: `${name} frame`}, [
-				h('style', {type: 'text/css'}, [
-				`
-				.${name} {
-					opacity: 0;
-					animation-name: ${name};
-					animation-duration: ${meta.duration}s;
-					animation-timing-function: steps(1, end);
-					animation-iteration-count: infinite;
-				}
-				@keyframes ${name} {
-					from {
-						opacity: 0;
-					}
-					${startFrame}% {
-						opacity: 1;
-					}
-					${endFrame}% {
-						opacity: 1;
-					}
-					to {
-						opacity: 0;
-					}
-				}
-				`
-				]),
+			return h('svg', {
+				x: ((meta.width * 10) + 30) * props.index
+			}, [
 				h('rect', {
 					width: meta.width * 10,
 					height: (meta.height * 19) + 30,
@@ -205,16 +177,34 @@ function Screen(props = {}, children = []) {
 	const innerWidth = width + 31;
 	const t = (outerWidth / 2) - (outerMiddle / 2);
 
+	const css = `
+		.viewbox {
+			animation-name: sequence;
+			animation-duration: ${props.duration}s;
+			animation-timing-function: steps(${children.length / 2}, end);
+			animation-iteration-count: infinite;
+		}
+		@keyframes sequence {
+			from {
+				transform: translateX(0);
+			}
+			to {
+				transform: translateX(-${(outerWidth - 2) * children.length}px);
+			}
+		}
+	`;
+
 	return h('svg', {
 		xmlns: 'http://www.w3.org/2000/svg',
 		width: outerWidth,
 		height: outerHeight,
 		style: {
 			fontFamily: "Consolas, Menlo, 'Bitstream Vera Sans Mono', monospace, 'Powerline Symbols'",
-			fontSize: 15,
+			fontSize: projectY(.8),
 		}
 	}, [
-		h('g', {}, [
+		h('style', {type: 'text/css'}, css),
+		h('g', [
 			h('rect', {
 				rx: 5,
 				ry: 5,
@@ -245,7 +235,13 @@ function Screen(props = {}, children = []) {
 				r: 7.5,
 				fill: '#18c132'
 			}),
-			h('svg', {x: 15, y: 100}, children)
+			h('g', {class: 'viewbox'}, [
+				h('svg', {
+					x: 15,
+					y: 100,
+					width: outerWidth * children.length
+				}, children)
+			])
 		]),
 	]);
 }
