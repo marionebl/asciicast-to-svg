@@ -106,7 +106,8 @@ function createRenderer(meta) {
 	const text = () => b.toString();
 
 	const render = (props = {}) => {
-		const rows = group(matrix(t.displayBuffer));
+		const buffer = t.displayBuffer;
+		const rows = group(matrix(buffer));
 		const cells = rows.reduce((rows, groups) => [...rows, ...groups.map(g => Group(g.props, g.children))], []);
 
 		if (!props.component || props.component === 'svg') {
@@ -124,11 +125,11 @@ function createRenderer(meta) {
 				x: ((meta.width * 10) + 30) * props.index
 			}, [
 				h('rect', {
-					width: meta.width * 10,
-					height: (meta.height * 19) + 30,
-					style: {
-						fill: '#000'
-					}
+					width: projectX(1),
+					height: projectY(1),
+					x: projectX(buffer.cursorX),
+					y: projectY(buffer.cursorY),
+					fill: '#42535b'
 				}),
 				...cells
 			]);
