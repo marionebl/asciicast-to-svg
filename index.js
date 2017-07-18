@@ -53,10 +53,16 @@ function animate(cast) {
 			return renderer.render({component: 'g', index});
 		});
 
+	const ds = cast.stdout.map(([d]) => d);
+
 	return Screen({
 		duration: cast.duration,
+		height: cast.height,
+		keys: ds
+			.map((d, i) => ds.slice(0, i + 1).reduce((s, o) => s += o), 0)
+			.map(s => s / (cast.duration / 100)),
+		tite: cast.title || 'asciicast',
 		width: cast.width,
-		height: cast.height
 	}, frames);
 }
 
@@ -104,7 +110,11 @@ function createRenderer(meta) {
 		const cells = rows.reduce((rows, groups) => [...rows, ...groups.map(g => Group(g.props, g.children))], []);
 
 		if (!props.component || props.component === 'svg') {
-			return Screen({width: meta.width, height: meta.height}, cells);
+			return Screen({
+				height: meta.height,
+				width: meta.width,
+				title: meta.title || 'asciicast'
+			}, cells);
 		} else {
 			if (cells.length === 0) {
 				return null;
@@ -176,23 +186,34 @@ function Screen(props = {}, children = []) {
 	const outerMiddle = outerWidth / 2;
 	const innerWidth = width + 31;
 	const t = (outerWidth / 2) - (outerMiddle / 2);
+	const frameWidth = outerWidth - 2;
 
-	const css = `
+	const keyframes = (props.keys || [])
+		.map((key, index) => `
+			@keyframe ${key}% {
+				transform: translateX(-${frameWidth * (index + 1)}px);
+			}
+		`)
+		.join('\n');
+
+	const css = (props.keys || []).length > 0
+		? `
 		.viewbox {
 			animation-name: sequence;
 			animation-duration: ${props.duration}s;
-			animation-timing-function: steps(${children.length / 2}, end);
+			animation-timing-function: steps(${children.length}, end);
 			animation-iteration-count: infinite;
 		}
 		@keyframes sequence {
 			from {
 				transform: translateX(0);
 			}
+			${keyframes}
 			to {
-				transform: translateX(-${(outerWidth - 2) * children.length}px);
+				transform: translateX(-${frameWidth * children.length}px);
 			}
 		}
-	`;
+	` : ``;
 
 	return h('svg', {
 		xmlns: 'http://www.w3.org/2000/svg',
@@ -235,6 +256,15 @@ function Screen(props = {}, children = []) {
 				r: 7.5,
 				fill: '#18c132'
 			}),
+			h('text', {
+				x: outerWidth / 2,
+				y: 75,
+				style: {
+					fill: 'rgb(85,85,85)',
+					fontSize: '16px',
+					textAnchor: 'middle'
+				}
+			}, props.title),
 			h('g', {class: 'viewbox'}, [
 				h('svg', {
 					x: 15,
