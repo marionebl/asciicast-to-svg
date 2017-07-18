@@ -229,7 +229,6 @@ function Screen(props = {}, children = []) {
 			h('rect', {
 				rx: 5,
 				ry: 5,
-				y: 50,
 				width: innerWidth,
 				height: height + 76,
 				style: {
@@ -240,25 +239,25 @@ function Screen(props = {}, children = []) {
 			}),
 			h('circle', {
 				cx: 20,
-				cy: 70,
+				cy: 20,
 				r: 7.5,
 				fill: '#ff5f58'
 			}),
 			h('circle', {
 				cx: 45,
-				cy: 70,
+				cy: 20,
 				r: 7.5,
 				fill: '#ffbd2e'
 			}),
 			h('circle', {
 				cx: 70,
-				cy: 70,
+				cy: 20,
 				r: 7.5,
 				fill: '#18c132'
 			}),
 			h('text', {
 				x: outerWidth / 2,
-				y: 75,
+				y: 25,
 				style: {
 					fill: 'rgb(85, 85, 85)',
 					fontSize: '16px',
@@ -268,7 +267,7 @@ function Screen(props = {}, children = []) {
 			h('g', {class: 'viewbox'}, [
 				h('svg', {
 					x: 15,
-					y: 100,
+					y: 50,
 					width: outerWidth * children.length
 				}, children)
 			])
