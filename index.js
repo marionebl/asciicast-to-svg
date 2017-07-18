@@ -1,5 +1,4 @@
 'use strict'
-
 const Terminal = require('headless-terminal')
 const colors = require('./colors');
 const h = require('virtual-dom/virtual-hyperscript/svg');
@@ -80,13 +79,13 @@ function matrix(b) {
 			const inverse = !!((raw & masks.inverse) >> shifts.inverse);
 			const underline = !!((raw & masks.underline) >> shifts.underline);
 			const bold = !!((raw & masks.bold) >> shifts.bold);
-			const fg = colors[(raw & masks.fg) >> shifts.fg] || '#fff';
-			const bg = colors[(raw & masks.bg) >> shifts.bg] || '#000';
+			const fg = colors[(raw & masks.fg) >> shifts.fg] || colors.fg;
+			const bg = colors[(raw & masks.bg) >> shifts.bg] || colors.bg;
 
 			if (children === ' ') {
-				const [, pre] = b.getCell(y, x - 1);
-				const [, post] = b.getCell(y, x + 1);
-				if (!pre || pre === ' ' || !post || post === ' ') {
+				const [, pre = ' '] = b.getCell(y, x - 1);
+				const [, post = ' '] = b.getCell(y, x + 1);
+				if (pre === ' ' || post === ' ') {
 					continue;
 				}
 			}
@@ -234,7 +233,7 @@ function Screen(props = {}, children = []) {
 				width: innerWidth,
 				height: height + 76,
 				style: {
-					backgroundColor: '#000',
+					backgroundColor: colors.bg,
 					stroke: '#303030',
 					strokeWidth: 1,
 				}
@@ -261,7 +260,7 @@ function Screen(props = {}, children = []) {
 				x: outerWidth / 2,
 				y: 75,
 				style: {
-					fill: 'rgb(85,85,85)',
+					fill: 'rgb(85, 85, 85)',
 					fontSize: '16px',
 					textAnchor: 'middle'
 				}
@@ -278,7 +277,7 @@ function Screen(props = {}, children = []) {
 }
 
 function group(rows) {
-	return rows.map(cells => cells.reduce((groups, cell, i) => {
+	return rows.map(cells => cells.filter(c => c.children !== '⏎').reduce((groups, cell, i) => {
 		const prev = groups[groups.length - 1] || {children: ''};
 
 		if (prev.children.length === 0) {
